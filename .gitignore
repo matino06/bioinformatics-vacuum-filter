@@ -39,3 +39,12 @@
 
 # debug information files
 *.dwo
+
+# data for testing
+data/*.fasta
+
+# build file for cmake
+build
+
+# mac os file
+.DS_Store
