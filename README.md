@@ -62,8 +62,6 @@ vacuum-filter/
 │   ├── main.cpp
 │   ├── vacuum_filter.hpp
 │   └── vacuum_filter.cpp
-├── tests/
-│   └── test_basic.cpp
 ├── data/              # test input files (not tracked by git)
 ├── CMakeLists.txt
 └── README.md
