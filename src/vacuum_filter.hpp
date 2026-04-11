@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "MurmurHash3.h"
 
 /**
  * Usage:
