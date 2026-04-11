@@ -16,6 +16,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=address")
 add_executable(vacuum_filter
     src/main.cpp
     src/vacuum_filter.cpp
+    src/MurmurHash3.cpp
 )
 
 target_include_directories(vacuum_filter PRIVATE src)
