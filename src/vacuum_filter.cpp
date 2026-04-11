@@ -60,13 +60,14 @@ size_t VacuumFilter::size_in_bytes() const {
     return 0; // TODO
 }
 
+// Author: Matino Milicevic
 double VacuumFilter::estimated_max_load(size_t n, size_t c) {
-    return 0;
+    double avg  = static_cast<double>(n) / static_cast<double>(c);
+    return avg + 1.5 * std::sqrt(2.0 * avg * std::log(static_cast<double>(c)));
 }
 
+// Author: Matino Milicevic
 bool VacuumFilter::load_factor_test(size_t n, double alpha, double r, size_t L) {
-    if (L == 0) return false;
-
     size_t m = static_cast<size_t>(
         std::ceil(static_cast<double>(n) / (kSlotsPerBucket * alpha * L))) * L; // the number of buckets        
     size_t N = static_cast<size_t>(4.0 * r * static_cast<double>(m) * alpha);   // the number of inserted items
