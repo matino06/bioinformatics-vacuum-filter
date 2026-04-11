@@ -60,8 +60,21 @@ size_t VacuumFilter::size_in_bytes() const {
     return 0; // TODO
 }
 
+double VacuumFilter::estimated_max_load(size_t n, size_t c) {
+    return 0;
+}
+
 bool VacuumFilter::load_factor_test(size_t n, double alpha, double r, size_t L) {
-    return true; // TODO
+    if (L == 0) return false;
+
+    size_t m = static_cast<size_t>(
+        std::ceil(static_cast<double>(n) / (kSlotsPerBucket * alpha * L))) * L; // the number of buckets        
+    size_t N = static_cast<size_t>(4.0 * r * static_cast<double>(m) * alpha);   // the number of inserted items
+    size_t c = m / L;                                                           // the number of chunks
+
+    double P = 0.97 * kSlotsPerBucket * static_cast<double>(L);     // the capacity lower bound of each chunk
+    double D = estimated_max_load(N, c);
+    return D < P;
 }
 
 // Author: Matino Milicevic
