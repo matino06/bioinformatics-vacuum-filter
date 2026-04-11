@@ -60,7 +60,15 @@ size_t VacuumFilter::size_in_bytes() const {
     return 0; // TODO
 }
 
+bool VacuumFilter::load_factor_test(size_t n, double alpha, double r, size_t L) {
+    return true; // TODO
+}
+
+// Author: Matino Milicevic
 size_t VacuumFilter::range_selection(size_t n, double alpha, double r) {
-    // TODO
-    return 1;
+    size_t L = 1;
+    while (!load_factor_test(n, alpha, r, L) && L < (1u << 20)) {
+        L *= 2;
+    }
+    return L;
 }

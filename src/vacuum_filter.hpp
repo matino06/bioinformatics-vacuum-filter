@@ -41,5 +41,7 @@ private:
     // Bucket table
     std::vector<std::array<uint32_t, kSlotsPerBucket>> buckets_;
 
+    static bool load_factor_test(size_t n, double alpha, double r, size_t L);
+
     static size_t range_selection(size_t n, double alpha, double r);
 };
