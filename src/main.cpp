@@ -18,6 +18,10 @@ int main(int argc, char* argv[]) {
     std::cout << "Vacuum Filter — k=" << k << ", fpr=" << fpr << "\n";
     std::cout << "Input: " << input_file << "\n";
 
+    // Test constructor
+    size_t capacity = 1000000;
+    VacuumFilter vf(capacity, fpr);
+
     // TODO: read FASTA, extract k-mers, insert into filter, benchmark
 
     return 0;

@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <iostream>
 
 /**
  * Usage:
@@ -39,4 +40,6 @@ private:
 
     // Bucket table
     std::vector<std::array<uint32_t, kSlotsPerBucket>> buckets_;
+
+    static size_t range_selection(size_t n, double alpha, double r);
 };
