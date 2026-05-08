@@ -45,7 +45,12 @@ int main(int argc, char* argv[]) {
 
     file.close();
 
-    return 0;
+    for (size_t i = 0; i + k <= sequence.size(); i++) {
+
+        string kmer = sequence.substr(i, k);
+
+        cout << kmer << endl;
+    }
 
     return 0;
 }
