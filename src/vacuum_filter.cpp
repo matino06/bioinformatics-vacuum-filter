@@ -60,6 +60,17 @@ uint32_t VacuumFilter::hash_fp(uint32_t fp) const {
     return out;
 }
 
+size_t VacuumFilter::index_of(const std::string& key) const {
+    uint64_t h = hash_to_index(key);
+    return static_cast<size_t>((h * static_cast<uint64_t>(num_buckets_)) >> 32);
+}
+
+size_t VacuumFilter::alt_bucket(size_t b, uint32_t fp) const {
+    size_t L     = alt_range_[fp % 4];
+    size_t delta = hash_fp(fp) % L;
+    return b ^ delta;
+}
+
 bool VacuumFilter::insert(const std::string& key) {
     // TODO
     (void)key;
