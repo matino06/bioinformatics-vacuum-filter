@@ -13,6 +13,8 @@ VacuumFilter::VacuumFilter(size_t capacity, double fpr)
     if (fingerprint_len_ < 1)  fingerprint_len_ = 1;
     if (fingerprint_len_ > 32) fingerprint_len_ = 32;
 
+    fp_mask_ = (fingerprint_len_ == 32) ? 0xFFFFFFFFu : (1u << fingerprint_len_) - 1u;
+
     // Compute 4 alternate ranges (Algorithm 3 from the paper)
     // Smaller ARs => better locality 
     // Larger ARs => higher load factor
@@ -32,6 +34,30 @@ VacuumFilter::VacuumFilter(size_t capacity, double fpr)
 
     // Allocate bucket table
     buckets_.assign(num_buckets_, {});
+}
+
+static constexpr uint32_t kSeedIndex = 0x9747b28cu;  // seed for H(x)
+static constexpr uint32_t kSeedFp    = 0x5f3759dfu;  // seed for H'(x)
+// H(x)
+uint32_t VacuumFilter::hash_to_index(const std::string& key) const {
+    uint32_t out;
+    MurmurHash3_x86_32(key.data(), static_cast<int>(key.size()), kSeedIndex, &out);
+    return out;
+}
+
+//H'(x)
+uint32_t VacuumFilter::hash_to_fp(const std::string& key) const {
+    uint32_t out;
+    MurmurHash3_x86_32(key.data(), static_cast<int>(key.size()), kSeedFp, &out);
+    uint32_t fp = out & fp_mask_;
+    return fp ? fp : 1u;  // 0 is reserved for "empty slot" — map to 1
+}
+
+//H(fp)
+uint32_t VacuumFilter::hash_fp(uint32_t fp) const {
+    uint32_t out;
+    MurmurHash3_x86_32(&fp, static_cast<int>(sizeof(fp)), kSeedFp, &out);
+    return out;
 }
 
 bool VacuumFilter::insert(const std::string& key) {

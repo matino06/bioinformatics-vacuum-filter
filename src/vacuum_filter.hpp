@@ -35,12 +35,19 @@ private:
     double fpr_;               // target false positive rate (ε)
     size_t num_buckets_;       // m — total number of buckets in the table
     size_t fingerprint_len_;   // l — fingerprint length in bits
+    uint32_t fp_mask_;         // bitmask to isolate l bits (e.g. l=12 → 0xFFF)
 
     // Alternate ranges
     size_t alt_range_[4];      // L[0]..L[3]
 
     // Bucket table
     std::vector<std::array<uint32_t, kSlotsPerBucket>> buckets_;
+
+    uint32_t hash_to_index(const std::string& key) const;
+    
+    uint32_t hash_to_fp(const std::string& key) const;
+    
+    uint32_t hash_fp(uint32_t fp) const;
 
     static double estimated_max_load(size_t n, size_t c);
 
