@@ -78,14 +78,28 @@ bool VacuumFilter::insert(const std::string& key) {
 }
 
 bool VacuumFilter::lookup(const std::string& key) const {
-    // TODO
-    (void)key;
+    uint32_t fp = hash_to_fp(key);
+    size_t   b1 = index_of(key);
+    size_t   b2 = alt_bucket(b1, fp);
+
+    for (size_t b : {b1, b2}) {
+        for (const uint32_t& slot : buckets_[b]) {
+            if (slot == fp) return true;
+        }
+    }
     return false;
 }
 
 bool VacuumFilter::remove(const std::string& key) {
-    // TODO
-    (void)key;
+    uint32_t fp = hash_to_fp(key);
+    size_t   b1 = index_of(key);
+    size_t   b2 = alt_bucket(b1, fp);
+
+    for (size_t b : {b1, b2}) {
+        for (uint32_t& slot : buckets_[b]) {
+            if (slot == fp) { slot = 0; return true; }
+        }
+    }
     return false;
 }
 
