@@ -67,7 +67,7 @@ size_t VacuumFilter::index_of(const std::string& key) const {
 }
 
 size_t VacuumFilter::alt_bucket(size_t b, uint32_t fp) const {
-    size_t L     = alt_range_[fp % 4];
+    size_t L = alt_range_[fp % 4];
     size_t delta = hash_fp(fp) % L;
     return b ^ delta;
 }
@@ -115,11 +115,16 @@ bool VacuumFilter::remove(const std::string& key) {
 }
 
 double VacuumFilter::load_factor() const {
-    return 0.0; // TODO
+    size_t filled = 0;
+    for (const auto& bucket : buckets_)
+        for (const uint32_t& slot : bucket) {
+            if (slot != 0) filled++;
+        }     
+    return static_cast<double>(filled) / static_cast<double>(num_buckets_ * kSlotsPerBucket);
 }
 
 size_t VacuumFilter::size_in_bytes() const {
-    return 0; // TODO
+    return num_buckets_ * kSlotsPerBucket * sizeof(uint32_t);
 }
 
 // Author: Matino Milicevic
