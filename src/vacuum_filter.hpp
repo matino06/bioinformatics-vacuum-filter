@@ -51,6 +51,8 @@ private:
 
     size_t alt_bucket(size_t b, uint32_t fp) const;
 
+    size_t alt_bucket2(size_t b, uint32_t fp) const;
+
     size_t index_of(const std::string& key) const;
 
     static double estimated_max_load(size_t n, size_t c);

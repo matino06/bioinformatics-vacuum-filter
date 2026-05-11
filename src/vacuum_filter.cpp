@@ -71,6 +71,14 @@ size_t VacuumFilter::alt_bucket(size_t b, uint32_t fp) const {
     return b ^ delta;
 }
 
+size_t VacuumFilter::alt_bucket2(size_t b, uint32_t fp) const {
+    size_t delta = hash_fp(fp) % num_buckets_;
+    size_t b2 = (b - delta) % num_buckets_;
+    b2 = (num_buckets_ - 1 - b2 + delta) % num_buckets_;
+    return b2;
+}
+
+
 bool VacuumFilter::insert(const std::string& key) {
     // TODO
     (void)key;
