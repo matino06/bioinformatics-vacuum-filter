@@ -1,5 +1,6 @@
 #include "vacuum_filter.hpp"
 #include <stdexcept>
+#include <cmath>
 
 // Author: Matino Milicevic
 VacuumFilter::VacuumFilter(size_t capacity, double fpr)
@@ -88,7 +89,8 @@ bool VacuumFilter::insert(const std::string& key) {
 bool VacuumFilter::lookup(const std::string& key) const {
     uint32_t fp = hash_to_fp(key);
     size_t   b1 = index_of(key);
-    size_t   b2 = alt_bucket(b1, fp);
+    size_t   b2;
+    capacity_ < pow(2,18) ? b2 = alt_bucket2(b1,fp) : b2 = alt_bucket(b1,fp);
 
     for (size_t b : {b1, b2}) {
         for (const uint32_t& slot : buckets_[b]) {
@@ -101,7 +103,8 @@ bool VacuumFilter::lookup(const std::string& key) const {
 bool VacuumFilter::remove(const std::string& key) {
     uint32_t fp = hash_to_fp(key);
     size_t   b1 = index_of(key);
-    size_t   b2 = alt_bucket(b1, fp);
+    size_t   b2;
+    capacity_ < pow(2,18) ? b2 = alt_bucket2(b1,fp) : b2 = alt_bucket(b1,fp);
 
     for (size_t b : {b1, b2}) {
         for (uint32_t& slot : buckets_[b]) {
