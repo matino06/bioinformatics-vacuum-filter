@@ -48,8 +48,7 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i + k <= sequence.size(); i++) {
 
         string kmer = sequence.substr(i, k);
-
-        cout << kmer << endl;
+        vf.insert(kmer);
     }
 
     return 0;

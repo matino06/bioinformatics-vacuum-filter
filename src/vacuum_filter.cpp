@@ -39,6 +39,8 @@ VacuumFilter::VacuumFilter(size_t capacity, double fpr)
 
 static constexpr uint32_t kSeedIndex = 0x9747b28cu;  // seed for H(x)
 static constexpr uint32_t kSeedFp    = 0x5f3759dfu;  // seed for H'(x)
+
+// Author: Amar Omeragic
 // H(x)
 uint32_t VacuumFilter::hash_to_index(const std::string& key) const {
     uint32_t out;
@@ -46,6 +48,7 @@ uint32_t VacuumFilter::hash_to_index(const std::string& key) const {
     return out;
 }
 
+// Author: Amar Omeragic
 //H'(x)
 uint32_t VacuumFilter::hash_to_fp(const std::string& key) const {
     uint32_t out;
@@ -54,6 +57,7 @@ uint32_t VacuumFilter::hash_to_fp(const std::string& key) const {
     return fp ? fp : 1u;  // 0 is reserved for "empty slot" — map to 1
 }
 
+// Author: Amar Omeragic
 //H(fp)
 uint32_t VacuumFilter::hash_fp(uint32_t fp) const {
     uint32_t out;
@@ -61,17 +65,20 @@ uint32_t VacuumFilter::hash_fp(uint32_t fp) const {
     return out;
 }
 
+// Author: Amar Omeragic
 size_t VacuumFilter::index_of(const std::string& key) const {
     uint64_t h = hash_to_index(key);
     return static_cast<size_t>((h * static_cast<uint64_t>(num_buckets_)) >> 32);
 }
 
+// Author: Amar Omeragic
 size_t VacuumFilter::alt_bucket(size_t b, uint32_t fp) const {
     size_t L = alt_range_[fp % 4];
     size_t delta = hash_fp(fp) % L;
     return b ^ delta;
 }
 
+// Author: Amar Omeragic
 size_t VacuumFilter::alt_bucket2(size_t b, uint32_t fp) const {
     size_t delta = hash_fp(fp) % num_buckets_;
     size_t b2 = (b - delta) % num_buckets_;
@@ -79,7 +86,7 @@ size_t VacuumFilter::alt_bucket2(size_t b, uint32_t fp) const {
     return b2;
 }
 
-
+// Author: Amar Omeragic
 bool VacuumFilter::insert(const std::string& key) {
     uint32_t fp = hash_to_fp(key);
     size_t   b1 = index_of(key);
@@ -95,10 +102,11 @@ bool VacuumFilter::insert(const std::string& key) {
         }
     }
     //TODO
-    
+
     return false;
 }
 
+// Author: Amar Omeragic
 bool VacuumFilter::lookup(const std::string& key) const {
     uint32_t fp = hash_to_fp(key);
     size_t   b1 = index_of(key);
@@ -112,7 +120,7 @@ bool VacuumFilter::lookup(const std::string& key) const {
     }
     return false;
 }
-
+// Author: Amar Omeragic
 bool VacuumFilter::remove(const std::string& key) {
     uint32_t fp = hash_to_fp(key);
     size_t   b1 = index_of(key);
@@ -129,7 +137,7 @@ bool VacuumFilter::remove(const std::string& key) {
     }
     return false;
 }
-
+// Author: Amar Omeragic
 double VacuumFilter::load_factor() const {
     size_t filled = 0;
     for (const auto& bucket : buckets_)
@@ -138,7 +146,7 @@ double VacuumFilter::load_factor() const {
         }     
     return static_cast<double>(filled) / static_cast<double>(num_buckets_ * kSlotsPerBucket);
 }
-
+// Author: Amar Omeragic
 size_t VacuumFilter::size_in_bytes() const {
     return num_buckets_ * kSlotsPerBucket * sizeof(uint32_t);
 }
